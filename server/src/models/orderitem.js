@@ -14,14 +14,14 @@ export default (sequelize, DataTypes) => {
   OrderItem.init(
     {
       quantity: DataTypes.INTEGER,
-      orderId: {
+      OrderId: {
         type: DataTypes.INTEGER,
         references: {
           model: "Orders",
           key: "id",
         },
       },
-      itemId: {
+      ItemId: {
         type: DataTypes.INTEGER,
         references: {
           model: "Items",

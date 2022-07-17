@@ -9,8 +9,21 @@ const config = enVariables[env];
 const db = {};
 
 let sequelize;
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
+if (env === "production") {
+  // Break apart the Heroku database url and rebuild the configs we need
+  const { DATABASE_URL } = process.env;
+  const dbUrl = url.parse(DATABASE_URL);
+  const username = dbUrl.auth.substr(0, dbUrl.auth.indexOf(":"));
+  const password = dbUrl.auth.substr(
+    dbUrl.auth.indexOf(":") + 1,
+    dbUrl.auth.length
+  );
+  const dbName = dbUrl.path.slice(1);
+  const host = dbUrl.hostname;
+  const { port } = dbUrl;
+  config.host = host;
+  config.port = port;
+  sequelize = new Sequelize(dbName, username, password, config);
 } else {
   sequelize = new Sequelize(
     config.database,
@@ -39,6 +52,14 @@ Object.keys(db).forEach((modelName) => {
     db[modelName].associate(db);
   }
 });
+
+db.Item.belongsToMany(db.Order, { through: "OrderItems" });
+db.Order.belongsToMany(db.Item, { through: "OrderItems" });
+
+db.Item.hasMany(db.OrderItem);
+db.OrderItem.belongsTo(db.Item);
+db.Order.hasMany(db.OrderItem);
+db.OrderItem.belongsTo(db.Order);
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;

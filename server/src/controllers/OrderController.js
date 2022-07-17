@@ -28,8 +28,8 @@ export async function createOrder(req, res) {
     const orderItemQueries = [];
     for (let i = 0; i < items.length; i += 1) {
       const item = {
-        order_id: order.id,
-        item_id: items[i].id,
+        OrderId: order.id,
+        ItemId: items[i].id,
         quantity: items[i].quantity,
         createdAt: new Date(),
         updatedAt: new Date(),

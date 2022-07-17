@@ -10,14 +10,14 @@ export default {
       quantity: {
         type: Sequelize.INTEGER,
       },
-      orderId: {
+      OrderId: {
         type: Sequelize.INTEGER,
         references: {
           model: "Orders",
           key: "id",
         },
       },
-      itemId: {
+      ItemId: {
         type: Sequelize.INTEGER,
         references: {
           model: "Items",
