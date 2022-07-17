@@ -1,27 +1,54 @@
-import { useState, useEffect } from "react";
-import logo from "./logo.svg";
+import ErrorBoundary from "./components/ErrorBoundary";
+import User from "./components/User";
+import Items from "./components/Items";
+import ItemDetail from "./components/ItemDetail";
+import Cart from "./components/Cart";
+
+import { useState } from "react";
+
 import "./App.css";
 import axios from "axios";
 
 function App() {
-  const [data, setData] = useState(null);
+  const [items, setItems] = useState([]);
+  const [cart, setCart] = useState([]);
+  const [selectedItemIndex, setSelectedItemIndex] = useState();
 
-  /*useEffect(() => {
-    axios.get("/api").then((res) => setData(res.data.message));
-  }, []);
-  */
+  const addToCart = (item, quantity) => {
+    const cartItem = { quantity, ...item };
+    setCart([cartItem, ...cart]);
+    console.log(cart);
+  };
 
-  useEffect(() => {
-    axios.get("/getuser").then((res) => setData(res.data.message));
-  }, []);
+  const emptyCart = () => {
+    setCart([]);
+  };
+
+  const setItemDetail = (itemIndex) => {
+    setSelectedItemIndex(itemIndex);
+  };
+
+  const getItems = () => {
+    axios.get("/getitems").then((result) => {
+      //console.log(result);
+      setItems(result.data.items);
+    });
+  };
+
+  const selectedItem = items[selectedItemIndex];
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>{!data ? "Loading..." : data}</p>
-      </header>
-    </div>
+    <ErrorBoundary>
+      <Items items={items} setItemDetail={setItemDetail} />
+      {items.length === 0 && (
+        <button type="button" onClick={getItems}>
+          Get Items
+        </button>
+      )}
+      <ItemDetail item={selectedItem} addToCart={addToCart} />
+      <Cart items={cart} emptyCart={emptyCart} />
+      <User />
+    </ErrorBoundary>
   );
 }
 

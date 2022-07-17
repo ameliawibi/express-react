@@ -1,17 +1,15 @@
 import model from "../models";
 
-const { User } = model;
+const { Item } = model;
 
 export default {
-  async getUser(req, res) {
+  async getItem(req, res) {
     try {
-      const user = await User.findOne({
-        where: {
-          name: "John",
-        },
-      });
-      if (user) {
-        return res.status(200).send({ message: user.name });
+      const items = await Item.findAll();
+
+      if (items) {
+        console.log(items);
+        return res.status(200).send({ items });
       }
     } catch (e) {
       console.log(e);
