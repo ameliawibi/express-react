@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import Sequelize from "sequelize";
 import enVariables from "../config/config.json";
+import url from "url";
 
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || "development";
